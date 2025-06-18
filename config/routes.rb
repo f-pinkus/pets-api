@@ -7,4 +7,7 @@ Rails.application.routes.draw do
   delete "/pets/:id", controller: "pets", action: "destroy"
 
   post "/signup", controller: "users", action: "create"
+
+  post "/login", controller: "sessions", action: "create"
+  delete "/logout", controller: "sessions", action: "destroy"
 end
