@@ -1,52 +1,47 @@
 class PetsController < ApplicationController
   def index
     @pets = Pet.all
-
-    render :index
+    render json: @pets
   end
 
   def show
     @pet = Pet.find(params[:id])
-
-    render :show
+    render json: @pet
   end
 
   def create
-    @pet = Pet.create(
+    @pet = Pet.new(
       name: params["name"],
       age: params["age"],
       breed: params["breed"],
       user_id: params["user_id"]
     )
 
-    if @pet.valid?
-      render :show
+    if @pet.save
+      render json: @pet, status: :created
     else
-      render json: { errors: @pet.errors.full_messages }
+      render json: { errors: @pet.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def update
     @pet = Pet.find(params["id"])
 
-    @pet.update(
+    if @pet.update(
       name: params["name"] || @pet.name,
       age: params["age"] || @pet.age,
       breed: params["breed"] || @pet.breed,
       user_id: params["user_id"] || @pet.user_id
     )
-
-    if @pet.valid?
-      render :show
+      render json: @pet
     else
-      render json: { errors: @pet.errors.full_messages }
+      render json: { errors: @pet.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def destroy
     @pet = Pet.find(params["id"])
     @pet.destroy
-
-    render json: { message: "Pet successfully deleted." }
+    head :no_content
   end
 end
